@@ -1,9 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.AppInfraDroid" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Base.Theme.AppInfraDroid"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Cor da Status Bar -->
+        <item name="android:statusBarColor">@color/infra_dark_bg</item>
+
+
+        <!-- Cor principal do app -->
+        <item name="colorPrimary">@color/infra_dark_bg</item>
+
     </style>
 
     <style name="Theme.AppInfraDroid" parent="Base.Theme.AppInfraDroid" />
+
 </resources>
