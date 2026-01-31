@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppInfraDroid">
         <activity
+            android:name=".AddBotao"
+            android:exported="false" />
+        <activity
+            android:name=".BotoesControle"
+            android:exported="false" />
+        <activity
+            android:name=".AddControle"
+            android:exported="false" />
+        <activity
             android:name=".Home"
             android:exported="false" />
         <activity
