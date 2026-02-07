@@ -10,35 +10,46 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.iots.appinfradroid.data.AppDatabase
+import br.iots.appinfradroid.data.ControleEntity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
-data class Controle(val nome: String)
+import kotlinx.coroutines.launch
 
 class Home : AppCompatActivity() {
 
-    private val listaControles = mutableListOf(
-        Controle("Controle da Fita Led"),
-        Controle("Controle da TV"),
-        Controle("Ar Condicionado")
-    )
+    private lateinit var db: AppDatabase
+    private lateinit var adapter: ControleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        db = AppDatabase.getDatabase(this)
+
         configurarToolbar()
         configurarRecyclerView()
         configurarCliques()
+        observarDados()
     }
 
     private fun configurarRecyclerView() {
         val recycler = findViewById<RecyclerView>(R.id.recyclerControls)
         recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = ControleAdapter(listaControles, this)
+        adapter = ControleAdapter(emptyList(), this)
+        recycler.adapter = adapter
+    }
+
+    private fun observarDados() {
+        lifecycleScope.launch {
+            db.controleDao().getAll().collect { lista ->
+                adapter.updateList(lista)
+            }
+        }
     }
 
     private fun configurarToolbar() {
@@ -56,23 +67,27 @@ class Home : AppCompatActivity() {
         val fabAdd = findViewById<FloatingActionButton>(R.id.fabClose)
         val btnTexto = findViewById<MaterialButton>(R.id.btnAddControl)
 
-        fabAdd.setOnClickListener {
+        val openAddControle = {
             startActivity(Intent(this, AddControle::class.java))
         }
 
-        btnTexto.setOnClickListener {
-            startActivity(Intent(this, AddControle::class.java))
-        }
+        fabAdd.setOnClickListener { openAddControle() }
+        btnTexto.setOnClickListener { openAddControle() }
     }
 }
 
 class ControleAdapter(
-    private val lista: List<Controle>,
+    private var lista: List<ControleEntity>,
     private val context: AppCompatActivity
 ) : RecyclerView.Adapter<ControleAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textNome: TextView = view.findViewById(R.id.textNomeControle)
+    }
+
+    fun updateList(novaLista: List<ControleEntity>) {
+        lista = novaLista
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -87,7 +102,8 @@ class ControleAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BotoesControle::class.java)
-            intent.putExtra("controle_nome", controle.nome)
+            intent.putExtra("CONTROLE_ID", controle.id)
+            intent.putExtra("CONTROLE_NOME", controle.nome)
             context.startActivity(intent)
         }
     }
