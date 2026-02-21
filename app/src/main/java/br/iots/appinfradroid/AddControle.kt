@@ -36,9 +36,14 @@ class AddControle : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
+        // Configuração da Barra de Notificações (Status Bar) e Barra de Tarefas (Navigation Bar)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.parseColor("#333333")
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+        window.navigationBarColor = Color.parseColor("#333333")
+
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = false
+        controller.isAppearanceLightNavigationBars = false
     }
 
     private fun configurarSalvar() {

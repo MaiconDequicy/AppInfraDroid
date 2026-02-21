@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 
-package br.iots.appinfradroid
+package br.iots.appinfradroid;
 
-import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
-
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        Handler(Looper.getMainLooper()).postDelayed({
-
-            val intent = Intent(this, Home::class.java)
-            startActivity(intent)
-            finish()
-        }, 2000)
-    }
+/**
+ * Interface para comunicação com o serviço de Hardware (HAL) do InfraDroid.
+ */
+interface IInfraDroidService {
+    void sendIrCommand(String command);
 }
